@@ -1,2 +1,3 @@
 # CLONE-TABNEWS
+
 Projeto educacional
