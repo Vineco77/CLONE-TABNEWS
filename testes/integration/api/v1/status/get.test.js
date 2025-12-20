@@ -1,5 +1,5 @@
-it("GET to /api/v1/status should return 220", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
+it("GET to /api/v1/status should return 200", async () => {
+  const response = await fetch("https://mendoncadog.com.br");
 
   expect(response.status).toBe(200);
 });
