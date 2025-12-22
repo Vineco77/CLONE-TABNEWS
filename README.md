@@ -1,3 +1,3 @@
 # CLONE-TABNEWS
 
-Projeto educacional
+Projeto educacional.
