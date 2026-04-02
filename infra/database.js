@@ -1,6 +1,9 @@
 import { Client } from "pg";
 
 async function query(queryObject) {
+  let BD;
+  console.log(BD);
+
   let client;
   try {
     client = await getNewClient();
