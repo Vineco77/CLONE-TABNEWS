@@ -1,3 +1,9 @@
+import orchestrator from "tests/orchestrator.js";
+
+beforeAll(async () => {
+  await orchestrator.waitForAllServices();
+});
+
 // it("GET to /api/v1/status should return 200 on prod", async () => {
 //   const response = await fetch("https://mendoncadog.com.br");
 
