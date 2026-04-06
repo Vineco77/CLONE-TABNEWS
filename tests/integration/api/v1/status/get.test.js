@@ -21,7 +21,7 @@ it("GET to /api/v1/status should return 200 on dev", async () => {
   expect(responseBody.updated_at).toEqual(parsedUpdateAt);
 
   if (process.env.NODE_ENV === "development") {
-    expect(responseBody.dependencies.database.version).toEqual("26.0");
+    expect(responseBody.dependencies.database.version).toEqual("16.0");
     expect(responseBody.dependencies.database.max_connections).toEqual(100);
   } else {
     expect(responseBody.dependencies.database.version).toEqual(
