@@ -4,5 +4,9 @@
     "plugin:jest/recommended",
     "next/core-web-vitals",
     "prettier"
-  ]
+  ],
+  "rules": {
+    "jest/no-conditional-expect": "off",
+    "no-useless-catch": "off"
+  }
 }
