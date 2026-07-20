@@ -6,7 +6,7 @@ beforeAll(async () => {
 
 describe("GET /api/v1/status", () => {
   describe("Anonymous user", () => {
-    it("Retrievinf current system status", async () => {
+    it("Retrieving current system status", async () => {
       const response = await fetch("http://localhost:3000/api/v1/status");
       expect(response.status).toBe(200);
 
