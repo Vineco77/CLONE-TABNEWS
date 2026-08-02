@@ -1,4 +1,4 @@
-import { version as uuidVersion } from "uuid";
+import { version as uuidVersion, v4 as uuidV4 } from "uuid";
 import { describe } from "node_modules/eslint/lib/rule-tester/rule-tester";
 import orchestrator from "tests/orchestrator.js";
 
@@ -10,6 +10,8 @@ beforeAll(async () => {
 
 describe("POST /api/v1/users", () => {
   describe("Anonymous user", () => {
+    const testPassword = uuidV4().toString();
+
     it("With unique and valid data", async () => {
       const response = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
@@ -19,7 +21,7 @@ describe("POST /api/v1/users", () => {
         body: JSON.stringify({
           username: "teste",
           email: "teste@gmail.com",
-          password: "senha123",
+          password: testPassword,
         }),
       });
 
@@ -31,7 +33,7 @@ describe("POST /api/v1/users", () => {
         id: responseBody.id,
         username: "teste",
         email: "teste@gmail.com",
-        password: "senha123",
+        password: testPassword,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
@@ -49,7 +51,7 @@ describe("POST /api/v1/users", () => {
         body: JSON.stringify({
           username: "emailDuplicado1",
           email: "emailDuplicado@gmail.com",
-          password: "senha123",
+          password: testPassword,
         }),
       });
 
@@ -63,7 +65,7 @@ describe("POST /api/v1/users", () => {
         body: JSON.stringify({
           username: "emailDuplicado2",
           email: "EmailDuplicado@gmail.com",
-          password: "senha123",
+          password: testPassword,
         }),
       });
 
@@ -87,7 +89,7 @@ describe("POST /api/v1/users", () => {
         body: JSON.stringify({
           username: "usernameduplicated",
           email: "usernameduplicated1@gmail.com",
-          password: "senha123",
+          password: testPassword,
         }),
       });
 
@@ -101,7 +103,7 @@ describe("POST /api/v1/users", () => {
         body: JSON.stringify({
           username: "Usernameduplicated",
           email: "usernameduplicated2@gmail.com",
-          password: "senha123",
+          password: testPassword,
         }),
       });
 
