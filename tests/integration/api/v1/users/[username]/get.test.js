@@ -1,4 +1,4 @@
-import { version as uuidVersion, v4 as uuidV4 } from "uuid";
+import { version as uuidVersion } from "uuid";
 import { describe } from "node_modules/eslint/lib/rule-tester/rule-tester";
 import orchestrator from "tests/orchestrator.js";
 
@@ -9,8 +9,6 @@ beforeAll(async () => {
 });
 
 describe("GET /api/v1/users/[username]", () => {
-  const testPassword = uuidV4().toString();
-
   describe("Anonymous user", () => {
     it("With exact case match", async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
@@ -21,7 +19,7 @@ describe("GET /api/v1/users/[username]", () => {
         body: JSON.stringify({
           username: "MesmoCase",
           email: "mesmo.case@gmail.com",
-          password: testPassword,
+          password: "senha123",
         }),
       });
 
@@ -39,7 +37,7 @@ describe("GET /api/v1/users/[username]", () => {
         id: response2Body.id,
         username: "MesmoCase",
         email: "mesmo.case@gmail.com",
-        password: testPassword,
+        password: response2Body.password,
         created_at: response2Body.created_at,
         updated_at: response2Body.updated_at,
       });
@@ -57,7 +55,7 @@ describe("GET /api/v1/users/[username]", () => {
         body: JSON.stringify({
           username: "CaseDiferente",
           email: "case.diferente@gmail.com",
-          password: testPassword,
+          password: "senha123",
         }),
       });
 
@@ -75,7 +73,7 @@ describe("GET /api/v1/users/[username]", () => {
         id: response2Body.id,
         username: "CaseDiferente",
         email: "case.diferente@gmail.com",
-        password: testPassword,
+        password: response2Body.password,
         created_at: response2Body.created_at,
         updated_at: response2Body.updated_at,
       });
