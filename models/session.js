@@ -1,8 +1,8 @@
 import crypto from "node:crypto";
-import database from "infra/database";
+import database from "infra/database.js";
 import { UnauthorizedError } from "infra/errors";
 
-const EXPIRATION_IN_MILLISECONDS = 60 * 60 * 24 * 30 * 1000; // 30 dias
+const EXPIRATION_IN_MILLISECONDS = 60 * 60 * 24 * 30 * 1000; // 30 Days
 
 async function findOneValidByToken(sessionToken) {
   const sessionFound = await runSelectQuery(sessionToken);
@@ -31,6 +31,7 @@ async function findOneValidByToken(sessionToken) {
         action: "Verifique se este usuário está logado e tente novamente.",
       });
     }
+
     return results.rows[0];
   }
 }
@@ -38,12 +39,12 @@ async function findOneValidByToken(sessionToken) {
 async function create(userId) {
   const token = crypto.randomBytes(48).toString("hex");
   const expiresAt = new Date(Date.now() + EXPIRATION_IN_MILLISECONDS);
-  const newSession = await runInsertQuery(token, userId, expiresAt);
 
+  const newSession = await runInsertQuery(token, userId, expiresAt);
   return newSession;
 
   async function runInsertQuery(token, userId, expiresAt) {
-    const result = await database.query({
+    const results = await database.query({
       text: `
         INSERT INTO
           sessions (token, user_id, expires_at)
@@ -55,14 +56,14 @@ async function create(userId) {
       values: [token, userId, expiresAt],
     });
 
-    return result.rows[0];
+    return results.rows[0];
   }
 }
 
 async function renew(sessionId) {
   const expiresAt = new Date(Date.now() + EXPIRATION_IN_MILLISECONDS);
 
-  const renewedSessionObject = runUpdateQuery(sessionId, expiresAt);
+  const renewedSessionObject = await runUpdateQuery(sessionId, expiresAt);
   return renewedSessionObject;
 
   async function runUpdateQuery(sessionId, expiresAt) {
@@ -77,7 +78,7 @@ async function renew(sessionId) {
           id = $1
         RETURNING
           *
-      `,
+        ;`,
       values: [sessionId, expiresAt],
     });
 
@@ -101,8 +102,7 @@ async function expireById(sessionId) {
           id = $1
         RETURNING
           *
-          
-      `,
+        ;`,
       values: [sessionId],
     });
 
@@ -113,9 +113,9 @@ async function expireById(sessionId) {
 const session = {
   create,
   findOneValidByToken,
-  EXPIRATION_IN_MILLISECONDS,
   renew,
   expireById,
+  EXPIRATION_IN_MILLISECONDS,
 };
 
 export default session;
