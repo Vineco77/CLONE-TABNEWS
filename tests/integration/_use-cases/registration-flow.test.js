@@ -1,3 +1,4 @@
+import activation from "models/activation";
 import { it } from "node_modules/eslint/lib/rule-tester/rule-tester";
 import orchestrator from "tests/orchestrator";
 
@@ -9,6 +10,7 @@ beforeAll(async () => {
 });
 
 describe("Use case: Registration Flow (all successful)", () => {
+  let createUserResponseBody;
   it("Create user account", async () => {
     const createUserResponse = await fetch(
       "http://localhost:3000/api/v1/users",
@@ -27,7 +29,7 @@ describe("Use case: Registration Flow (all successful)", () => {
 
     expect(createUserResponse.status).toBe(201);
 
-    const createUserResponseBody = await createUserResponse.json();
+    createUserResponseBody = await createUserResponse.json();
 
     expect(createUserResponseBody).toEqual({
       id: createUserResponseBody.id,
@@ -39,7 +41,21 @@ describe("Use case: Registration Flow (all successful)", () => {
       updated_at: createUserResponseBody.updated_at,
     });
   });
-  it("Receive activation email", async () => {});
+  it("Receive activation email", async () => {
+    const lastEmail = await orchestrator.getLastEmail();
+
+    const activationToken = await activation.findOneByUserId(
+      createUserResponseBody.id,
+    );
+
+    expect(lastEmail.sender).toBe("<contato@mendoncadog.com.br>");
+    expect(lastEmail.recipients[0]).toBe("<registration.flow@gmail.com>");
+    expect(lastEmail.subject).toBe("Ative seu cadastro no MendonçaDog");
+    expect(lastEmail.text).toContain("RegistrationFlow");
+    expect(lastEmail.text).toContain(activationToken.id);
+
+    console.log(lastEmail.text);
+  });
   it("Activate account", async () => {});
   it("Login", async () => {});
   it("Get user information", async () => {});
