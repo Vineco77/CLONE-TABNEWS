@@ -1,3 +1,4 @@
+import webserver from "infra/webserver";
 import activation from "models/activation";
 import { it } from "node_modules/eslint/lib/rule-tester/rule-tester";
 import orchestrator from "tests/orchestrator";
@@ -44,17 +45,21 @@ describe("Use case: Registration Flow (all successful)", () => {
   it("Receive activation email", async () => {
     const lastEmail = await orchestrator.getLastEmail();
 
-    const activationToken = await activation.findOneByUserId(
-      createUserResponseBody.id,
-    );
-
     expect(lastEmail.sender).toBe("<contato@mendoncadog.com.br>");
     expect(lastEmail.recipients[0]).toBe("<registration.flow@gmail.com>");
     expect(lastEmail.subject).toBe("Ative seu cadastro no MendonçaDog");
     expect(lastEmail.text).toContain("RegistrationFlow");
-    expect(lastEmail.text).toContain(activationToken.id);
 
-    console.log(lastEmail.text);
+    const activationTokenId = orchestrator.extractUUID(lastEmail.text);
+    expect(lastEmail.text).toContain(
+      `${webserver.origin}/cadastro/ativar/${activationTokenId}`,
+    );
+
+    const activationTokenObject =
+      await activation.findOneValidById(activationTokenId);
+
+    expect(activationTokenObject.user_id).toBe(createUserResponseBody.id);
+    expect(activationTokenObject.used_at).toBe(null);
   });
   it("Activate account", async () => {});
   it("Login", async () => {});
