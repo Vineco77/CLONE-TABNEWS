@@ -91,11 +91,13 @@ describe("POST /api/v1/sessions", () => {
         status_code: 401,
       });
     });
-    it("With correct email but correct password", async () => {
+    it("With correct email and correct password", async () => {
       const createdUser = await orchestrator.createUser({
         email: "tudoCorreto@gmail.com",
         password: "tudocorreto",
       });
+
+      await orchestrator.activateUser(createdUser);
 
       const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "POST",
