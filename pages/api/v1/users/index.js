@@ -5,7 +5,8 @@ import activation from "models/activation";
 
 const router = createRouter();
 
-router.post(postHandler);
+router.use(controller.injectAnonymousOrUser);
+router.post(controller.canRequest("create:user"), postHandler);
 
 export default router.handler(controller.errorHandlers);
 
@@ -14,7 +15,6 @@ export async function postHandler(request, response) {
   const newUser = await user.create(userInputValues);
 
   const activationToken = await activation.create(newUser.id);
-
   await activation.sendEmailToUser(newUser, activationToken);
   return response.status(201).json(newUser);
 }
